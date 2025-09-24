@@ -37,7 +37,6 @@ def show_json(request):
     data = serializers.serialize("json", news_list)
     return HttpResponse(data, content_type="application/json")
 
-@login_required(login_url='/login')
 def show_news(request, id):
     news = get_object_or_404(News, pk=id)
     news.increment_views()
@@ -62,6 +61,7 @@ def show_json_by_id(request, news_id):
     except News.DoesNotExist:
         return HttpResponse(status=404)
 
+@login_required(login_url='/login')
 def create_news(request: HttpRequest):
     form = NewsForm(request.POST or None)
     
