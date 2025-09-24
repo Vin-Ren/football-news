@@ -37,6 +37,7 @@ def show_json(request):
     data = serializers.serialize("json", news_list)
     return HttpResponse(data, content_type="application/json")
 
+@login_required(login_url='/login')
 def show_news(request, id):
     news = get_object_or_404(News, pk=id)
     news.increment_views()
@@ -78,12 +79,14 @@ def create_news(request: HttpRequest):
     return render(request, 'create_news.html', context=ctx)
 
 def register(request: HttpRequest):
-    form = UserCreationForm(request.POST or None)
+    form = UserCreationForm()
     
     if form.is_valid() and request.method == "POST":
-        form.save()
-        messages.success(request, 'Your account has been successfully created!')
-        return redirect('main:login')
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
     ctx = {
         'form': form
     }
@@ -108,6 +111,25 @@ def login_user(request: HttpRequest):
 
 def logout_user(request: HttpRequest):
     logout(request)
-    response = HttpResponseRedirect(reverse('main:show_main'))
+    response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def edit_news(request, id):
+    news = get_object_or_404(News, pk=id)
+    form = NewsForm(request.POST or None, instance=news)
+    if form.is_valid() and request.method == 'POST':
+        form.save()
+        return redirect('main:show_main')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, "edit_news.html", context)
+
+def delete_news(request, id):
+    news = get_object_or_404(News, pk=id)
+    news.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+
