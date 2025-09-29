@@ -20,7 +20,7 @@ def show_main(request):
     news_list = News.objects.all() if filters == 'all' else News.objects.filter(user=request.user)
     context = {
         'npm': '2406353225',
-        'name': 'Vincent Valentino Oei',
+        'name': request.user.username,
         'class': "PBP E",
         'news_list': news_list,
         'last_login': request.COOKIES.get('last_login')
