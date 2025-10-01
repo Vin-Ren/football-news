@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import create_news, delete_news, edit_news, login_user, logout_user, register, show_json, show_json_by_id, show_main, show_news, show_xml, show_xml_by_id
+from .views import add_news_entry_ajax, create_news, delete_news, edit_news, login_user, logout_user, register, show_json, show_json_by_id, show_main, show_news, show_xml, show_xml_by_id
 
 app_name = 'main'
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('news/<uuid:id>/edit', edit_news, name='edit_news'),
     path('news/<uuid:id>/delete', delete_news, name='delete_news'),
+    path('create-news-ajax', add_news_entry_ajax, name='add_news_entry_ajax'),
 ]
